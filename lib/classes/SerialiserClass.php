@@ -1,59 +1,64 @@
 <?php
+/**
+ * Serialiser Class
+ *
+ * Serialise object to different format using right serialiser
+ *
+ * @author  Sergey R <qwe@qwe.com>
+ */
+class SerialiserClass
+{
+    private $Serialiser;
 
-class SerialiserClass {
+    public function __construct(SerialiserInterface $serialiser)
+    {
+        $this->Serialiser = $serialiser;
+    }
 
-	private $Serialiser;
+    /**
+     * Converts object to array
+     *
+     * @param object $obj
+     *
+     * @return array
+     */
+    private function toArray(object $obj): array
+    {
+        $clsName     = get_class($obj);
+        $clsNameLen  = strlen($clsName);
+        $arr         = (array) $obj;
+        $resultArray = [];
 
-	function __construct( SerialiserInterface $serialiser ) {
+        $_obj = &$arr;
 
-		$this->Serialiser = $serialiser;
+        foreach ($_obj as $key => $value) {
+            if (!is_string($key)) {
+                continue;
+            }
 
-	}
+            if (strpos($key, $clsName) === 1) {
+                $key =  str_replace($clsName, "", $key);
+            }
 
-	private function toArray( $obj ) {
+            if (strpos($key, "*") === 1) {
+                $key = substr($key, 1);
+            }
 
-		$clsName     = get_class( $obj );
-		$clsNameLen  = strlen( $clsName );
-		$arr         = (array) $obj;
-		$resultArray = [];
+            while (key_exists($key, $resultArray)) {
+                $key = "_".$key;
+            }
 
-		$_obj = &$arr;
+            $resultArray[$key] = $value;
+        }
 
-		foreach ( $_obj as $key => $value ) {
+        unset($arr);
+        unset($_obj);
 
-			if(!is_string($key)) continue;
+        return $resultArray;
+    }
 
-			if ( strpos( $key, $clsName ) === 1 ) {
-
-				$key =  str_replace($clsName,"",$key);
-
-			}
-
-			if( strpos( $key, "*" ) === 1 ){
-
-				$key = substr( $key, 1 );
-
-			}
-
-			while (key_exists($key,$resultArray)){
-				$key = "_".$key;
-			}
-
-			$resultArray[$key] = $value;
-
-		}
-
-		unset( $arr );
-		unset( $_obj );
-
-		return $resultArray;
-
-	}
-
-	public function serialize( $val ) {
-
-		return $this->Serialiser->serialize( $this->toArray( $val ) );
-
-	}
-
+    public function serialize(object $val): string
+    {
+        return $this->Serialiser->serialize($this->toArray($val));
+    }
 }

@@ -1,0 +1,14 @@
+{
+    "name": "sergej/dz",
+    "type": "library,",
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.13"
+    },
+    "authors": [
+        {
+            "name": "Sergey R",
+            "email": "qwe@qwe.com"
+        }
+    ],
+    "require": {}
+}

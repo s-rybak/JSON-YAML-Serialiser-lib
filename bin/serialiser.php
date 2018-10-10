@@ -2,7 +2,7 @@
 <?php
 
 require_once "Person.php";
-require_once "../lib/load.php";
+require_once __DIR__."/../lib/load.php";
 
 $person = new Person("Anton","Hamaz", 29);
 
