@@ -9,11 +9,14 @@
 class XMLSerialiserClass implements SerialiserInterface
 {
     /**
-     * Serialise array to xml not implemented yet
+     * Serialise array to xml
      *
      * @param array $value
      *
      * @return string
+     *
+     * @todo implement XML serializer
+     *
      */
     public function serialize(array $value): string
     {

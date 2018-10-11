@@ -1,140 +1,147 @@
 <?php
 
+/**
+ * Person class
+ *
+ * implements person data class
+ *
+ * @author  Sergey R <qwe@qwe.com>
+ */
 class Person
 {
+    private const MAX_POSSIBLE_AGE = 150;
 
-  const MAX_POSSIBLE_AGE = 150;
+    private $firstName;
+    private $lastName;
+    private $age;
 
-  private $firstName;
-  private $lastName;
-  private $age;
+    private static $maxAge = 0;
 
-  private static $maxAge = 0;
-  // не собирает сборщик мусора ( статические свойства )
-
-  public static function getOldest(){
-
-     return self::$maxAge;
-
-  }
-
-  public function __construct($firstName,$lastName,$age = null){
-
-      $this->firstName = $firstName;
-      $this->lastName = $lastName;
-      $this->setAge($age);
-
-  }
-
-  public function __destruct(){
-
-
-
-  }
-
-  public function __toString()
-  {
-
-    return $this->firstName . " " . $this->lastName . "\n";
-
-  }
-
-  public function __get($prop)
-  {
-
-    $getter = 'get'.\ucfirst($prop);
-
-    if(\method_exists($this,$getter)){
-
-      return $this->$getter();
-
-    }else{
-
-      echo "Cannot access property \n";
-
+    public static function getOldest(): int
+    {
+        return self::$maxAge;
     }
 
-  }
-
-  public function __set($name,$value)
-  {
-
-    $setter = 'set'.\ucfirst($name);
-
-    if(\method_exists($this,$setter)){
-
-      $this->$setter($value);
-
+    public function __construct($firstName, $lastName, $age = null)
+    {
+        $this->firstName = $firstName;
+        $this->lastName  = $lastName;
+        $this->setAge($age);
     }
 
-  }
+    public function __destruct()
+    {
+    }
 
-  public function __isset($prop)
-  {
-    return isset($this->$prop);
-  }
+    public function __toString(): string
+    {
+        return $this->firstName . " " . $this->lastName . "\n";
+    }
+
+    /**
+     * Add direct property access if it exists get
+     *
+     * @param string $prop
+     *
+     * @return mixed
+     */
+    public function __get(string $prop): string
+    {
+        $getter = 'get' . \ucfirst($prop);
+
+        if (\method_exists($this, $getter)) {
+            return $this->$getter();
+        }
+
+        echo "Cannot access property \n";
+
+        return "";
+    }
 
 
-  public function __unset($prop)
-  {
-     unset($this->$prop);
-  }
+    /**
+     * Add direct property access if it exists set
+     *
+     * @param string $name
+     *
+     * @param string $value
+     */
+    public function __set(string $name, string $value): void
+    {
+        $setter = 'set' . \ucfirst($name);
 
-  public function jsonSerialize($value='')
-  {
-    return [
-      'firstName'=>$this->firstName,
-      'lastName'=>$this->lastName,
-    ];
-  }
+        if (\method_exists($this, $setter)) {
+            $this->$setter($value);
+        }
+    }
 
-  public function getFirstName(){
+    public function __isset(string $prop): bool
+    {
+        return isset($this->$prop);
+    }
 
-    return $this->firstName;
 
-  }
+    public function __unset(string $prop): void
+    {
+        unset($this->$prop);
+    }
 
-  public function setFirstName($name){
+    /**
+     *
+     * @param string $value
+     *
+     * @return array
+     */
+    public function jsonSerialize(string $value = ''): array
+    {
+        return [
+            'firstName' => $this->firstName,
+            'lastName'  => $this->lastName,
+        ];
+    }
 
-     $this->firstName = $name;
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
 
-  }
+    public function setFirstName(string $name): void
+    {
+        $this->firstName = $name;
+    }
 
-  public function getLastName(){
+    public function getLastName():string
+    {
+        return $this->lastName;
+    }
 
-    return $this->lastName;
+    public function setLastName(string $name): void
+    {
+        $this->lastName = $name;
+    }
 
-  }
+    public function getAge(): string
+    {
+        return $this->age;
+    }
 
-  public function setLastName($name){
+    /**
+     * Sets person age and check if it in allowed range
+     *
+     * @param int $age person age
+     */
+    public function setAge(int $age): void
+    {
+        if (self::MAX_POSSIBLE_AGE < $age) {
+            echo sprintf("Impossible age %d", $age) . "\n";
 
-     $this->lastName = $name;
+            return;
+        }
 
-  }
+        $this->age = $age;
 
-  public function getAge(){
-
-      return $this->age;
-
-  }
-
-  public function setAge($age){
-
-      if(self::MAX_POSSIBLE_AGE < $age){
-
-         echo sprintf("Impossible age %d",$age) ."\n";
-         return;
-
-      }
-
-       $this->age = $age;
-
-      if($age > self::$maxAge){
-
-          self::$maxAge = $age;
-
-      }
-
-  }
-
+        if ($age > self::$maxAge) {
+            self::$maxAge = $age;
+        }
+    }
 }

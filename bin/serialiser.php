@@ -4,7 +4,7 @@
 require_once "Person.php";
 require_once __DIR__."/../lib/load.php";
 
-$person = new Person("Anton","Hamaz", 29);
+$person = new Person("Anton", "Hamaz", 29);
 
 $serializerYAML = new SerialiserClass(new YAMLSerialiserClass());
 $serializerJSON = new SerialiserClass(new JSONSerialiserClass());
