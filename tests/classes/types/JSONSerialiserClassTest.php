@@ -3,39 +3,54 @@
 
 use PHPUnit\Framework\TestCase;
 
-class JSONSerialiserClassTest extends TestCase
-{
+class JSONSerialiserClassTest extends TestCase {
 
-	public function testInstanceOfSerialiserInterface()
-	{
+	private $serialiser;
 
-		$serialiser = new JSONSerialiserClass();
+	protected function setUp() {
+		parent::setUp();
+		$this->serialiser = new JSONSerialiserClass();
+	}
 
-		self::assertInstanceOf(SerialiserInterface::class,$serialiser);
+	public function testInstanceOfSerialiserInterface() {
+
+		self::assertInstanceOf( SerialiserInterface::class, $this->serialiser );
 
 	}
-    public function testSerialize()
-    {
-        $sample = new Person("first name","last name", 2);
-	    $serializerJSON = new SerialiserClass(new JSONSerialiserClass());
 
-	    $actual =  $serializerJSON->serialize($sample) ;
-        $expected = '{"firstName":"first name","lastName":"last name","age":2}';
+	/**
+	 * @param Person $object
+	 * @param string $json
+	 *
+	 * @dataProvider serialiseDataProvider
+	 */
+	public function testSerialize( Person $object, string $json ) {
 
-        self::assertEquals($expected,$actual);
+		$serializerJSON = new SerialiserClass( $this->serialiser );
 
-        $sample = new Person(["a"=>["b"=>["c"=>1],"d"=>3]],"a",2);
+		$actual = $serializerJSON->serialize( $object );
 
-	    $actual =  $serializerJSON->serialize($sample) ;
-	    $expected = '{"firstName":{"a":{"b":{"c":1},"d":3}},"lastName":"a","age":2}';
+		self::assertEquals( $json, $actual );
 
-	    self::assertEquals($expected,$actual);
+	}
 
-	    $sample = new Person(2,3,4);
+	public function serialiseDataProvider() {
 
-	    $actual =  $serializerJSON->serialize($sample) ;
-	    $expected = '{"firstName":2,"lastName":3,"age":4}';
+		yield
+		[
+			new Person( "first name", "last name", 2 ),
+			'{"firstName":"first name","lastName":"last name","age":2}'
+		];
+		yield
+		[
+			new Person( [ "a" => [ "b" => [ "c" => 1 ], "d" => 3 ] ], "a", 2 ),
+			'{"firstName":{"a":{"b":{"c":1},"d":3}},"lastName":"a","age":2}'
+		];
+		yield
+		[
+			new Person( 2, 3, 4 ),
+			'{"firstName":2,"lastName":3,"age":4}'
+		];
 
-	    self::assertEquals($expected,$actual);
-    }
+	}
 }
