@@ -46,6 +46,9 @@ class YAMLSerialiserClass implements SerialiserInterface
             unset($array);
         }
 
+        $yaml_str = preg_replace("/\\\\u([a-f0-9]{4})/", "", json_encode($yaml_str));
+        $yaml_str = json_decode($yaml_str);
+        // TODO: fix this symbols
         return $yaml_str;
     }
 }

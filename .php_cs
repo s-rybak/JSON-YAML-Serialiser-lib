@@ -4,6 +4,7 @@ use PhpCsFixer\Finder;
 
 $finder = Finder::create()
             ->in( __DIR__ . "/lib" )
+            ->in( __DIR__ . "/tests" )
             ->in( __DIR__ . "/bin" );
 
 return \PhpCsFixer\Config::create()
